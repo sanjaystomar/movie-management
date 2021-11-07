@@ -1,5 +1,7 @@
 package com.home.selfLearning.projectOne.service;
 
+import org.springframework.util.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +29,7 @@ public class RegexProcessor {
         Files.readAllLines(filePath)
                 .stream()
                 .map(line -> line.replaceAll("[\\(|\\)]|\\[([\\w(\\s|\\.)]+?)\\]", ""))
-                .map(line -> line.replaceAll("[\\.]"," "))
+                .map(line -> line.replaceAll("[\\.]", " "))
                 //.map(line -> line.substring()//l("[0-9]{4}", ""))
                 .map(RegexProcessor::trimAfterYear)
                 .forEach(System.out::println);
@@ -35,10 +37,13 @@ public class RegexProcessor {
     }
 
     private static String trimAfterYear(String s) {
-        Pattern pattern = Pattern.compile("\\d{4}");
+//        Pattern pattern = Pattern.compile("[0-9]{4}");
+        Pattern pattern = Pattern.compile("(\\d\\d\\d\\d)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(s);
-        matcher.matches();
-        int end = matcher.end();
-        return s.substring(end);
+        int end = s.length();
+        if (matcher.find()) {
+            end = matcher.end();
+        }
+        return s.substring(0, end);
     }
 }
